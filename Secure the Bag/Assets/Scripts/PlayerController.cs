@@ -35,13 +35,13 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // Moves the Character
-        Vector3 inputMovement = transform.forward * movementSpeed * Input.GetAxisRaw("Vertical");
-        characterController.Move(inputMovement * Time.deltaTime);
-        //transform.Rotate(Vector3.up * Input.GetAxisRaw("Horizontal") * rotationSpeed);
-        /*if (Input.GetButton("Left") && characterController.isGrounded)
-        {
+        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        characterController.Move(move * Time.deltaTime * movementSpeed);
+        
+        //An alternative movement mechanic
+        //Vector3 inputMovement = transform.forward * movementSpeed * Input.GetAxisRaw("Vertical");
+        //characterController.Move(inputMovement * Time.deltaTime);
 
-        }*/
         // This controlls jumping
         if(Input.GetButton("Jump") && characterController.isGrounded)
         {
