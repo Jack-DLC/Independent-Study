@@ -9,32 +9,38 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
 
     [SerializeField]
-    private float movementSpeed, rotationSpeed, jumpSpeed, gravity;
-
-
-    //render item if in fog of war
-    //get position of charater in the world
-    //place objects based a rule set
-        // left block !next to a right block  || two blocks cannot be next to eachother
-    // how often an object spawns 
-    // if there is an object at position x already
-    // detect if player hitbox collides with object hitbox
-    //
+    private Vector3 Xposition;
+    public float movementSpeed, Xincrement, jumpSpeed, gravity;
 
     private Vector3 movementDirection = Vector3.zero;
 
 
-    // Start is called before the first frame update
-    void Start()
+    
+    void Start() // Start is called before the first frame update
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
+    
+    void Update() // Update is called once per frame
     {
-        // Moves the Character
+        // Vector2.MoveTowards() moves the player towards certain position instead of teleporting them there
+        // Time.delteTime uses the time of the players computer to sync events. This reduces some performance issues on less poerful computers
+        transform.position = Vector3.MoveTowards(transform.position, Xposition, movementSpeed * Time.deltaTime);
+
+        if (Input.GetKeyDown(KeyCode.UpArrow)) // if player has hit 'A' the Character moves left Xincrement units
+        {
+            Xposition = new Vector3(transform.position.x + Xincrement, transform.position.z, transform.position.y);
+            transform.position = Xposition;
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow)) // if player hits 'S' the character moves left -Xincrement units
+        {
+            Xposition = new Vector3(transform.position.x - Xincrement, transform.position.z, transform.position.y);
+            transform.position = Xposition;
+        }
+
+
         Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         characterController.Move(move * Time.deltaTime * movementSpeed);
         
