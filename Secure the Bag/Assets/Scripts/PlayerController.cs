@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
             {
                 didChangeLastFrame = true; //Prevent overshooting lanes
                 laneNumber += Mathf.RoundToInt(Mathf.Sign(input));
-                if (laneNumber < 0) laneNumber = 0;
+                if (laneNumber < -1) laneNumber = -1;
                 else if (laneNumber >= lanesCount) laneNumber = lanesCount - 1;
             }
         }
