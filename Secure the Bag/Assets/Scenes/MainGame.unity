@@ -506,9 +506,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497d800e7273ed24faf6b9bf85c42f34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab:
-  - {fileID: 1898565205235572601, guid: b3338be3885b8df4aa28d5a0c235c6bf, type: 3}
-  - {fileID: 1594170675396278159, guid: b112861d0751dd54897b823af6b7f183, type: 3}
   jumpHeight: 2.5
   jumpForce: 5
   gravity: 0
@@ -519,6 +516,7 @@ MonoBehaviour:
   deadZone: 0.1
   sideSpeed: 5
   runningSpeed: 5
+  prefab: []
   gridSpawnCoords: 80
   gridOffset: 80
 --- !u!143 &912809739
@@ -569,6 +567,25 @@ CapsuleCollider:
   m_Height: 4
   m_Direction: 1
   m_Center: {x: 0, y: -2, z: 0}
+--- !u!114 &912809742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912809735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 816f73a762bb92a46811cb428e8a5bf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab:
+  - {fileID: 1898565205235572601, guid: b3338be3885b8df4aa28d5a0c235c6bf, type: 3}
+  - {fileID: 1594170675396278159, guid: b112861d0751dd54897b823af6b7f183, type: 3}
+  - {fileID: 7574484938464414353, guid: d40e24dd9af58084796250e97ebe4566, type: 3}
+  - {fileID: 8759533733602843721, guid: e1ede6b382e83db4ba4fc340f09f69da, type: 3}
+  gridSpawnCoords: 80
+  gridOffset: 80
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0

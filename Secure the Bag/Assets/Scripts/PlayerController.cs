@@ -9,12 +9,7 @@ public class PlayerController : MonoBehaviour
     private Animator animator; // used to handle animations
     private Rigidbody rigg; // A reference to the rigidbody of the player
 
-    public GameObject[] prefab; // used to spawn in tile prefabs
-
-
-
-    bool didChangeLastFrame = false;
-    
+    bool didChangeLastFrame = false; 
 
     public float jumpHeight = 2.5f; //how high the player jumps
     public float jumpForce = 5; // how quickly they jump
@@ -28,9 +23,6 @@ public class PlayerController : MonoBehaviour
     public float deadZone = 0.1f; // if a value is greater than this the player can perform an action
     public float sideSpeed = 5; // how quickly a player changes lanes
     public float runningSpeed; // how quickly a player changes lanes     
-
-    public float gridSpawnCoords = 80.0f;
-    public float gridOffset = 80;
 
     void Start() // Start is called before the first frame update
     {
@@ -79,19 +71,5 @@ public class PlayerController : MonoBehaviour
         pos.x = Mathf.Lerp(pos.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
         transform.position = pos;
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        bool has_triggered = false;
-        if (other.gameObject.tag == "SpawnPoint" && has_triggered == false)
-        {
-            has_triggered = true;
-            Debug.Log("player");
-            Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords), Quaternion.identity);
-            gridSpawnCoords += gridOffset;
-        }
-        
-    }
     
-
 }
