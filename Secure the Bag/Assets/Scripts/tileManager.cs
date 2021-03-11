@@ -97,125 +97,124 @@ public class tileManager : MonoBehaviour
         GameObject obstacle; // a GameObject used to add instantiated obstacles to a list of obstacles in the scene
 
         int numObstacles; // number of obstacles that will be spawned into a lane
-        int randomObstacle; // used to determine what obstacle will be instantiated
-        int objectsinRow; // keeps track of the number of obstacles in a row 
-        int numWalls = 0; // tracks the number of walls in a row 
+        int randomObstacle; // used to determine what o0bstacle prefab will be instantiated
+        int objectsinRow; // track the number of objects in a row 
+        int numWalls; // tracks the number of walls in a row 
+        float height; // Y value used to spawn in different obstacles
+        bool spawnObject; // if true, an obstacle will spawn in this lane
 
-        bool spawnObject = false; // if true an obstacle will spawn on the lane
+        //DestroyObstacles(); // clear scene before spawning new obstacles
 
-        //DestroyObstacles();
-
-        for (float i = gridSpawnCoords - 10; i < gridSpawnCoords + 70; i += 20)// spawns in an obstacle on each row
+        for (float i = gridSpawnCoords - 10; i < gridSpawnCoords + 70; i += 20)
+        // itterates through every other row and determines how many items to spawn, between 0 and 3 or a pittfall, in the row
+        // the center of the spawner prefab is located on the second row so we start 10 units before
         {
-            //Debug.Log(gridSpawnCoords);
             objectsinRow = 0;
-            numObstacles = Random.Range(1, 5);
+            
+            // In future itteerations try and bias the algorithm towards more objects the further the player gets
+            numObstacles = Random.Range(1, 5); // randomly decide the number of objects to spawn
 
-            switch (numObstacles)
+            switch (numObstacles) // handles item spawn cases
             {
                 case 0: // no obstacles are spawned
                     break;
 
                 case 1: // one obstacle is spawned in a random lane
-                    Debug.Log("one obstacle");
                     for (int j = -10; j <= 10; j += 10)
+
                     {
+                        if (objectsinRow == 1) break;
+
+                        // decide if an obstacle should spawn and what obstacle to spawn
                         randomObstacle = Random.Range(3, 5);
                         spawnObject = (Random.value > 0.5f);
-                        //if (objectsinRow == 1) break;
 
-                        if (spawnObject && objectsinRow == 0)
+
+                        // set the height of the obstacle
+                        if (randomObstacle == 3) height = 1.0f;
+                        else height = 2.5f;
+
+                        if (spawnObject )
                         {
-                            switch (randomObstacle)
-                            {
-                                case 3:
-                                    objectsinRow++;
-                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
-                                    activeObstacles.Add(obstacle);
-                                    break;
-                                case 4:
-                                    objectsinRow++;
-                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 2.5f, i), Quaternion.Euler(0, 90, 0));
-                                    activeObstacles.Add(obstacle);
-                                    break;
-                            }
+                            objectsinRow++;
+                            obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
+                            activeObstacles.Add(obstacle);
 
                         }
-                        
-                        if(j == 10 && objectsinRow == 0)
+
+                        // spawn obstacle if we reach the third row and no obstacles have been generated
+                        if (j == 10 && objectsinRow == 0) 
                         {
-                            obstacle = Instantiate(prefab[3], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
+                            obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
                             activeObstacles.Add(obstacle);
                             objectsinRow++;
                         }
                     }
                     break;
-                    
-                case 2: // two obstacles are spawned in random lanes
-                    //Debug.Log("Two obstacles");
+
+                // two obstacles are spawned in random lanes
+                case 2: 
                     for (int j = -10; j <= 10; j += 10)
                     {
+                        if (objectsinRow == 2) break; // if ther are already two objects then exit loop
+
+                        // decide if an obstacle should spawn and what obstacle to spawn
                         randomObstacle = Random.Range(3, 5);
                         spawnObject = (Random.value > 0.5f);
 
-                        if (spawnObject && objectsinRow < 2)
-                        {
-                            switch (randomObstacle)
-                            {
-                                case 3:
-                                    objectsinRow++;
-                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
-                                    activeObstacles.Add(obstacle);
-                                    break;
-                                case 4:
-                                    objectsinRow++;
-                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 2.5f, i), Quaternion.Euler(0, 90, 0));
-                                    activeObstacles.Add(obstacle);
-                                    break;
-                            }
+                        // set the height of the obstacle
+                        if (randomObstacle == 3) height = 1.0f;
+                        else height = 2.5f;
 
+                        if (spawnObject)
+                        {
+                            objectsinRow++;
+                            obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
+                            activeObstacles.Add(obstacle);
                         }
 
-                        if (j == 10 && objectsinRow <= 1)
+                        // spawn obstacle if we reach the third row and no obstacles have been generated
+                        if (j == 10 && objectsinRow != 2)
                         {
-                            obstacle = Instantiate(prefab[3], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
+                            obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
                             activeObstacles.Add(obstacle);
                             objectsinRow++;
+                            break;
                         }
                     }
                     break;
 
                 case 3:// three obstacles are spawned in random lanes
-                    Debug.Log("Three obstacles ");
-
+                    numWalls = 0;
                     for (int j = -10; j <= 10; j += 10)
                     {
                         randomObstacle = Random.Range(3, 5);
+                        if (randomObstacle == 3) height = 1.0f;
+                        else height = 2.5f;
 
-                        switch (randomObstacle)
+                        switch (randomObstacle)// handels 
                         {
                             case 3:
-                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
+                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
                                 activeObstacles.Add(obstacle);
                                 break;
                             case 4:
-                                if (numWalls == 2) // if there are already two walls we spawn a hurdle
+                                if (numWalls == 2) // if there are already two walls, spawn a hurdle and exit loop
                                 {
-                                    obstacle = Instantiate(prefab[3], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
+                                    obstacle = Instantiate(prefab[3], new Vector3(j, y:1, i), Quaternion.Euler(0, 90, 0));
                                     activeObstacles.Add(obstacle);
                                     break;
                                 }
-
-                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 2.5f, i), Quaternion.Euler(0, 90, 0));
+                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
                                 activeObstacles.Add(obstacle);
                                 numWalls++;
                                 break;
-                        } 
+                        }
                     }
                     break;
                 case 4:
 
-                    //Debug.Log("pifall");
+                    Debug.Log("-------pifall-------");
                     break;
             }
         }
