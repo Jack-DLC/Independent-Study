@@ -415,6 +415,7 @@ MonoBehaviour:
   - {fileID: 1594170675396278159, guid: b112861d0751dd54897b823af6b7f183, type: 3}
   - {fileID: 7574484938464414353, guid: d40e24dd9af58084796250e97ebe4566, type: 3}
   - {fileID: 8759533733602843721, guid: e1ede6b382e83db4ba4fc340f09f69da, type: 3}
+  - {fileID: 7300911851757377738, guid: d2bb17504fa987649be141a316d45b71, type: 3}
   grid: {fileID: 0}
   obstacle: {fileID: 0}
   activeGrids: []

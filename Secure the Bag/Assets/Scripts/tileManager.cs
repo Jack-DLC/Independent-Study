@@ -113,10 +113,11 @@ public class tileManager : MonoBehaviour
 
             switch (numObstacles)
             {
-                //case 0: // no obstacles are spawned
-                    //break;
+                case 0: // no obstacles are spawned
+                    break;
 
                 case 1: // one obstacle is spawned in a random lane
+                    Debug.Log("one obstacle");
                     for (int j = -10; j <= 10; j += 10)
                     {
                         randomObstacle = Random.Range(3, 5);
@@ -147,30 +148,48 @@ public class tileManager : MonoBehaviour
                             activeObstacles.Add(obstacle);
                             objectsinRow++;
                         }
-                        
                     }
                     break;
                     
                 case 2: // two obstacles are spawned in random lanes
+                    //Debug.Log("Two obstacles");
                     for (int j = -10; j <= 10; j += 10)
                     {
+                        randomObstacle = Random.Range(3, 5);
                         spawnObject = (Random.value > 0.5f);
-                        if (objectsinRow == 2) break;
 
-                        if (spawnObject)
+                        if (spawnObject && objectsinRow < 2)
                         {
-                            objectsinRow++;
+                            switch (randomObstacle)
+                            {
+                                case 3:
+                                    objectsinRow++;
+                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
+                                    activeObstacles.Add(obstacle);
+                                    break;
+                                case 4:
+                                    objectsinRow++;
+                                    obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 2.5f, i), Quaternion.Euler(0, 90, 0));
+                                    activeObstacles.Add(obstacle);
+                                    break;
+                            }
+
+                        }
+
+                        if (j == 10 && objectsinRow <= 1)
+                        {
                             obstacle = Instantiate(prefab[3], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
                             activeObstacles.Add(obstacle);
-
+                            objectsinRow++;
                         }
                     }
                     break;
 
                 case 3:// three obstacles are spawned in random lanes
+                    Debug.Log("Three obstacles ");
+
                     for (int j = -10; j <= 10; j += 10)
                     {
-
                         randomObstacle = Random.Range(3, 5);
 
                         switch (randomObstacle)
@@ -187,15 +206,16 @@ public class tileManager : MonoBehaviour
                                     break;
                                 }
 
-                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 1, i), Quaternion.Euler(0, 90, 0));
-                                
+                                obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, 2.5f, i), Quaternion.Euler(0, 90, 0));
+                                activeObstacles.Add(obstacle);
                                 numWalls++;
                                 break;
                         } 
                     }
                     break;
                 case 4:
-                    
+
+                    //Debug.Log("pifall");
                     break;
             }
         }
