@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
         
 
         
-        if (Input.GetAxis("Horizontal") > deadZone)
+        if (Input.GetAxis("Vertical") > deadZone)
         {
             rigg.AddForce(0, jumpForce, 0);
         }

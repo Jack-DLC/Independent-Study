@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tileManager : MonoBehaviour
+public class TileManager : MonoBehaviour
 {
 
     public GameObject[] prefab; // used to spawn in tile prefabs
@@ -44,8 +44,8 @@ public class tileManager : MonoBehaviour
         if (other.gameObject.tag.Equals("terrainSpawner"))
         {
             //DestroyObstacles();
+            GridSpawner();
             ObstacleSpawner();
-            GridSpawner();            
         }
 
     }
@@ -71,6 +71,7 @@ public class tileManager : MonoBehaviour
 
         GameObject[] objects = GameObject.FindGameObjectsWithTag("shortBlock");
         Debug.Log(objects.Length);
+        
         /*
         for (int i = 0; i < objects.Length; i++)
         {
@@ -81,7 +82,7 @@ public class tileManager : MonoBehaviour
         //activeGrids.RemoveRange(0,7);
     }
 
-
+    // look into creating a class of game objects that handles creating 
     private void GridSpawner() // creates a grid adn populates it with obstacles
     {
         GameObject grid;
@@ -91,7 +92,8 @@ public class tileManager : MonoBehaviour
         DestroyGrid();
     }
 
-
+    // create a class of obstacles and add objects to that class when instantiated
+    // or set obstacles as children of their grid and 
     private void ObstacleSpawner() // controls logic behind obstacle spawning
     {
         GameObject obstacle; // a GameObject used to add instantiated obstacles to a list of obstacles in the scene
@@ -103,6 +105,11 @@ public class tileManager : MonoBehaviour
         float height; // Y value used to spawn in different obstacles
         bool spawnObject; // if true, an obstacle will spawn in this lane
 
+
+        int left_lane= -10;
+        int center_lane= 0;
+        int right_lane= 10;
+
         //DestroyObstacles(); // clear scene before spawning new obstacles
 
         for (float i = gridSpawnCoords - 10; i < gridSpawnCoords + 70; i += 20)
@@ -110,9 +117,10 @@ public class tileManager : MonoBehaviour
         // the center of the spawner prefab is located on the second row so we start 10 units before
         {
             objectsinRow = 0;
-            
+
             // In future itteerations try and bias the algorithm towards more objects the further the player gets
-            numObstacles = Random.Range(1, 5); // randomly decide the number of objects to spawn
+            //numObstacles = Random.Range(1, 5); // randomly decide the number of objects to spawn
+            numObstacles = 1;
 
             switch (numObstacles) // handles item spawn cases
             {
@@ -120,8 +128,22 @@ public class tileManager : MonoBehaviour
                     break;
 
                 case 1: // one obstacle is spawned in a random lane
-                    for (int j = -10; j <= 10; j += 10)
+                    // pick a random number between one of three and spawn an object in that lane
 
+                    int randLane = Random.Range(1, 4);
+                    randomObstacle = Random.Range(3, 5);
+                    if (randomObstacle == 3) height = 1.0f;
+                    else height = 2.5f;
+
+                    if (randLane == 1) obstacle = Instantiate(prefab[randomObstacle], new Vector3(left_lane, height, i), Quaternion.Euler(0, 90, 0));
+                    else if (randLane == 2) obstacle = Instantiate(prefab[randomObstacle], new Vector3(center_lane, height, i), Quaternion.Euler(0, 90, 0));
+                    else obstacle = Instantiate(prefab[randomObstacle], new Vector3(right_lane, height, i), Quaternion.Euler(0, 90, 0));
+
+                    activeObstacles.Add(obstacle);
+
+                    /*
+                    for (int j = -10; j <= 10; j += 10)
+                        // go iterate through
                     {
                         if (objectsinRow == 1) break;
 
@@ -138,8 +160,9 @@ public class tileManager : MonoBehaviour
                         {
                             objectsinRow++;
                             obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
-                            activeObstacles.Add(obstacle);
 
+                            activeObstacles.Add(obstacle);
+                            //totalNumObj++;
                         }
 
                         // spawn obstacle if we reach the third row and no obstacles have been generated
@@ -148,12 +171,15 @@ public class tileManager : MonoBehaviour
                             obstacle = Instantiate(prefab[randomObstacle], new Vector3(j, height, i), Quaternion.Euler(0, 90, 0));
                             activeObstacles.Add(obstacle);
                             objectsinRow++;
+                            break;
                         }
                     }
+                    */
                     break;
 
                 // two obstacles are spawned in random lanes
                 case 2: 
+                    // pick two numbers and place objects on that 
                     for (int j = -10; j <= 10; j += 10)
                     {
                         if (objectsinRow == 2) break; // if ther are already two objects then exit loop
@@ -213,7 +239,7 @@ public class tileManager : MonoBehaviour
                     }
                     break;
                 case 4:
-
+                    // pick a lane to spawn a pitfall and ensure that no other items can spawn in the lane
                     Debug.Log("-------pifall-------");
                     break;
             }
