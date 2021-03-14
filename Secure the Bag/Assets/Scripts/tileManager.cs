@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TileManager : MonoBehaviour
 {
 
     public GameObject[] prefab; // used to spawn in tile prefabs
+
+    public SceneManager currentScene;
 
     // activeTileSets is a list of GameObjects that contains references to all grid prefabs  that have been spawned into the scene
     public List<GameObject> activeTileSets = new List<GameObject>();
@@ -13,8 +16,6 @@ public class TileManager : MonoBehaviour
     public float gridSpawnCoords = 40.0f; // the z_coords coordinate that new tiles will spawn on
     public float gridOffset = 80; // spawning offset distance
 
-
-    
 
     // Start is called before the first frame update
     void Start()
@@ -34,11 +35,14 @@ public class TileManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // when player collides with 
     {
-        if (other.gameObject.CompareTag("terrainSpawner"))
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            SceneManager.LoadScene("MainGame");
+        }
+        else if (other.gameObject.CompareTag("terrainSpawner"))
         {
             DestroyTileSet();
             GenerateTileSet();
-            //SpawnGrid();
         }
     }
 
@@ -58,6 +62,9 @@ public class TileManager : MonoBehaviour
         activeTileSets.Add(gridSet);
 
         gridSet = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords + 25), Quaternion.identity);
+        gridSet.transform.parent = activeTileSets[1].transform;
+
+        gridSet = Instantiate(prefab[7], new Vector3(0, 5, gridSpawnCoords + 10), Quaternion.identity);
         gridSet.transform.parent = activeTileSets[1].transform;
 
         for (float z_coords = gridSpawnCoords; z_coords < gridSpawnCoords + 80; z_coords += 20)
@@ -144,14 +151,6 @@ public class TileManager : MonoBehaviour
 
         obstacle = Instantiate(prefab[fab], new Vector3(lane, height, z_position), Quaternion.identity);
         obstacle.transform.parent = activeTileSets[1].transform;
-    }
-
-
-    private float GetObstacleHeight(int obj)
-    {
-        if (obj == 3) return 1.0f;
-        else if (obj == 4) return 2.5f;
-        return 0.0f;
     }
 
 
