@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8194685213343050256}
   m_Layer: 0
-  m_Name: SpawnPlatform
+  m_Name: NeutralGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,6 +39,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8194685213343050256}
     m_Modifications:
+    - target: {fileID: 1594170673530393899, guid: b112861d0751dd54897b823af6b7f183,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1594170675396278158, guid: b112861d0751dd54897b823af6b7f183,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -99,6 +104,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WBW-TileSet_2
       objectReference: {fileID: 0}
+    - target: {fileID: 1594170675514236491, guid: b112861d0751dd54897b823af6b7f183,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b112861d0751dd54897b823af6b7f183, type: 3}
 --- !u!4 &7468937411177798440 stripped
@@ -114,6 +124,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8194685213343050256}
     m_Modifications:
+    - target: {fileID: 1594170673530393899, guid: b112861d0751dd54897b823af6b7f183,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -15.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1594170675396278158, guid: b112861d0751dd54897b823af6b7f183,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -173,6 +188,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WBW-TileSet_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1594170675514236491, guid: b112861d0751dd54897b823af6b7f183,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 15.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b112861d0751dd54897b823af6b7f183, type: 3}

@@ -6,15 +6,11 @@ public class TileManager : MonoBehaviour
 {
 
     public GameObject[] prefab; // used to spawn in tile prefabs
-    public GameObject grid; // a gameObject used to save newly instantiated grids to a list of all grids in the scene
-    public GameObject obstacle; // a gameObject used to save newly instantiated obstacles to a list of all obstacles in the scene
 
-    // activeGrids is a list of GameObjects that contains references to all grid prefabs  that have been spawned into the scene
-    public List<GameObject> activeGrids = new List<GameObject>();
-    // activeObstacles is a list of GameObjectsthat contains references to all grid prefabs  that have been spawned into the scene
-    public List<GameObject> activeObstacles = new List<GameObject>();
+    // activeTileSets is a list of GameObjects that contains references to all grid prefabs  that have been spawned into the scene
+    public List<GameObject> activeTileSets = new List<GameObject>();
 
-    public float gridSpawnCoords = 100.0f; // the z_coords coordinate that new tiles will spawn on
+    public float gridSpawnCoords = 40.0f; // the z_coords coordinate that new tiles will spawn on
     public float gridOffset = 80; // spawning offset distance
 
 
@@ -23,18 +19,11 @@ public class TileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        StartingGrid();
-        /*
-        GameObject grid;
-        grid = Instantiate(prefab[1], new Vector3(0, 0, 10), Quaternion.identity);
-        activeGrids.Add(grid);
-        grid = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords), Quaternion.identity);
-        activeGrids.Add(grid);
-        SpawnObstacles();
-        gridSpawnCoords += gridOffset;
-        //SpawnGrid();
-        */
+        //StartingGrids();
+        GameObject startingGrid;
+        startingGrid = Instantiate(prefab[6], new Vector3(0, 0, 10), Quaternion.identity);
+        activeTileSets.Add(startingGrid);
+        GenerateTileSet();
     }
 
     // Update is called once per frame
@@ -45,125 +34,129 @@ public class TileManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) // when player collides with 
     {
-        if (other.gameObject.tag.Equals("terrainSpawner"))
+        if (other.gameObject.CompareTag("terrainSpawner"))
         {
-            DestroyGrid();
-            SpawnGrid();
-        }
-
-    }
-
-    private void StartingGrid()
-    {
-        GameObject grid;
-        grid = Instantiate(prefab[1], new Vector3(0, 0, 10), Quaternion.identity);
-        activeGrids.Add(grid);
-        grid = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords), Quaternion.identity);
-        activeGrids.Add(grid);
-        SpawnObstacles();
-        gridSpawnCoords += gridOffset;
-    }
-
-    private void SpawnGrid() // creates a grid adn populates it with obstacles
-    {
-        GameObject grid;
-        grid = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords), Quaternion.identity);
-        activeGrids.Add(grid);
-        SpawnObstacles();
-        gridSpawnCoords += gridOffset;
-        //DestroyGrid();
-    }
-
-
-    private void DestroyGrid()
-    {
-        if (activeGrids.Count == 0) return;
-
-        Destroy(activeGrids[0]);
-        activeGrids.RemoveAt(0);
-    }
-
-
-    private void SpawnObstacles()
-    {
-        GameObject test;
-        int rand1;
-        int rand2;
-        int rand3;
-        int randLane;
-        int somanyObjects;
-
-        for (float z_coords = gridSpawnCoords - 10; z_coords < gridSpawnCoords + 70; z_coords += 20)
-        {
-            //int somanyObjects = Random.Range(1, 5);
-            somanyObjects = 1;
-            rand1 = ReturnPrefab();
-
-            if (somanyObjects == 1)
-            {
-                test = Instantiate(prefab[rand1], new Vector3(GetRandLane(), getHeight(rand1), z_coords), Quaternion.Euler(0, 90, 0));
-                test.transform.parent = activeGrids[1].transform;
-            }
-            else if (somanyObjects == 2)
-            {
-                int lane2;
-                rand2 = ReturnPrefab();
-                while (true)
-                {
-                    randLane = GetRandLane();
-                    lane2 = GetRandLane();
-                    if (lane2 != randLane)
-                    {
-                        test = Instantiate(prefab[rand1], new Vector3(randLane, getHeight(rand1), z_coords), Quaternion.Euler(0, 90, 0));
-                        test.transform.parent = activeGrids[1].transform;
-                        test = Instantiate(prefab[rand2], new Vector3(lane2, getHeight(rand2), z_coords), Quaternion.Euler(0, 90, 0));
-                        test.transform.parent = activeGrids[1].transform;
-                        return;
-                    }
-                }
-            }
-
-            else if (somanyObjects == 3)
-            {
-                // make three random prefabs, redo if there are three walls
-                rand2 = ReturnPrefab();
-                rand3 = ReturnPrefab();
-                while (true)
-                {
-                    if (rand1 == rand2 && rand2 == rand3)
-                    {
-                        rand1 = ReturnPrefab();
-                        rand2 = ReturnPrefab();
-                        rand3 = ReturnPrefab();
-                    }
-                    else
-                    {
-                        test = Instantiate(prefab[rand1], new Vector3(-10, getHeight(rand1), z_coords), Quaternion.Euler(0, 90, 0));
-                        test.transform.parent = activeGrids[1].transform;
-                        test = Instantiate(prefab[rand2], new Vector3(0, getHeight(rand2), z_coords), Quaternion.Euler(0, 90, 0));
-                        test.transform.parent = activeGrids[1].transform;
-                        test = Instantiate(prefab[rand3], new Vector3(10, getHeight(rand3), z_coords), Quaternion.Euler(0, 90, 0));
-                        test.transform.parent = activeGrids[1].transform;
-                        return;
-                    }
-                }
-            }
-            else Debug.Log("weve reached the last else");
+            DestroyTileSet();
+            GenerateTileSet();
+            //SpawnGrid();
         }
     }
 
-
-    private float getHeight(int test)
+    
+    private void GenerateTileSet()
     {
-        if (test == 3) return 1.0f;
-        else if (test == 4) return 2.5f;
+        int obstacleOne;
+        int obstacleTwo;
+        int obstacleThree;
+        int numberOfObstacles;
+
+        int spawnPositionOne; // ontains a random lane number to spawn an obstacle
+        int spawnPositionTwo; // contains a random lane number to spawn an obstacle
+
+        GameObject gridSet;
+        gridSet = new GameObject("GridSet") ;
+        activeTileSets.Add(gridSet);
+
+        gridSet = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords + 25), Quaternion.identity);
+        gridSet.transform.parent = activeTileSets[1].transform;
+
+        for (float z_coords = gridSpawnCoords; z_coords < gridSpawnCoords + 80; z_coords += 20)
+        {
+            numberOfObstacles = Random.Range(1, 5);
+
+            obstacleOne = ReturnPrefab();
+            switch (numberOfObstacles)
+            {
+                case 1:
+                    SpawnFloorTiles(2, z_coords);
+                    SpawnObstacle(obstacleOne, GetRandLane(), z_coords);
+                    break;
+                case 2:
+                    SpawnFloorTiles(2, z_coords);
+                    obstacleTwo = ReturnPrefab();
+                    while (true)
+                    {
+                        spawnPositionOne = GetRandLane();
+                        spawnPositionTwo = GetRandLane();
+                        if (spawnPositionTwo != spawnPositionOne)
+                        {
+                            SpawnObstacle(obstacleOne, spawnPositionOne, z_coords);
+                            SpawnObstacle(obstacleTwo, spawnPositionTwo, z_coords);
+                            break;
+                        }
+                    }
+                    break;
+                case 3:
+                    SpawnFloorTiles(2, z_coords);
+                    obstacleTwo = ReturnPrefab();
+                    obstacleThree = ReturnPrefab();
+                    while (true)
+                    {
+                        if (obstacleOne == 4 && obstacleTwo == 4 && obstacleThree == 4)
+                        {
+                            obstacleOne = ReturnPrefab();
+                            obstacleTwo = ReturnPrefab();
+                            obstacleThree = ReturnPrefab();
+                        }
+                        else
+                        {
+                            SpawnObstacle(obstacleOne, -10, z_coords);
+                            SpawnObstacle(obstacleTwo, 0, z_coords);
+                            SpawnObstacle(obstacleThree, 10, z_coords);
+                            break;
+                        }
+                    }
+                    break;
+                case 4:
+                    SpawnFloorTiles(1, z_coords);
+                    SpawnObstacle(5, 0, z_coords);
+                    break;
+            }
+        }
+        gridSpawnCoords += gridOffset;
+    }
+
+
+    private void DestroyTileSet()
+    {
+        if (activeTileSets.Count == 0) return;
+
+        Destroy(activeTileSets[0]);
+        activeTileSets.RemoveAt(0);
+    }
+
+
+    private void SpawnFloorTiles(int floorSet, float z_position)
+    {
+        GameObject tileSet;
+        if (floorSet == 1) z_position -= 10;
+        tileSet = Instantiate(prefab[floorSet], new Vector3(0, 0, z_position), Quaternion.identity);
+        tileSet.transform.parent = activeTileSets[1].transform;
+    }
+
+
+    private void SpawnObstacle(int fab, int lane, float z_position)// generate obstacle
+    {
+        GameObject obstacle;
+        float height = 0;
+        if (fab == 3) height = 1.0f;
+        else if (fab == 4) height = 2.5f;
+
+        obstacle = Instantiate(prefab[fab], new Vector3(lane, height, z_position), Quaternion.identity);
+        obstacle.transform.parent = activeTileSets[1].transform;
+    }
+
+
+    private float GetObstacleHeight(int obj)
+    {
+        if (obj == 3) return 1.0f;
+        else if (obj == 4) return 2.5f;
         return 0.0f;
     }
 
 
     private int GetRandLane()
     {
-        //int lane = -1;
         int lane = Random.Range(1, 4);
         if (lane == 1) return -10;
         else if (lane == 2) return 0;
