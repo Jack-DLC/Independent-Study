@@ -20,8 +20,8 @@ public class TileManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //StartingGrids();
-        GameObject startingGrid;
+        //= new GameObject();
+        GameObject startingGrid; 
         startingGrid = Instantiate(prefab[6], new Vector3(0, 0, 10), Quaternion.identity);
         activeTileSets.Add(startingGrid);
         GenerateTileSet();
@@ -33,14 +33,15 @@ public class TileManager : MonoBehaviour
 
     }
 
-    private void OnTriggerEnter(Collider other) // when player collides with 
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject.CompareTag("Obstacle"))
+        if (collision.gameObject.CompareTag("Obstacle"))
         {
             SceneManager.LoadScene("MainGame");
         }
-        else if (other.gameObject.CompareTag("terrainSpawner"))
+        else if (collision.gameObject.CompareTag("terrainSpawner"))
         {
+            Destroy(collision.gameObject);
             DestroyTileSet();
             GenerateTileSet();
         }
@@ -137,6 +138,7 @@ public class TileManager : MonoBehaviour
     {
         GameObject tileSet;
         if (floorSet == 1) z_position -= 10;
+        else if (floorSet == 2) z_position -= 5;
         tileSet = Instantiate(prefab[floorSet], new Vector3(0, 0, z_position), Quaternion.identity);
         tileSet.transform.parent = activeTileSets[1].transform;
     }
