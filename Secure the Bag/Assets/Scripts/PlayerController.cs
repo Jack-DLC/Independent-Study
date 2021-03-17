@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rigg; // A reference to the rigidbody of the player
 
     bool didChangeLastFrame = false;
-    Vector3 pos;
+    Vector3 playerPosition;
 
 
     public float gravity = -9.8f;
@@ -36,8 +36,8 @@ public class PlayerController : MonoBehaviour
         onGround = true;
         rigg = GetComponent<Rigidbody>(); // Not sure if i need this anymore
         rigg.constraints = RigidbodyConstraints.FreezeRotation;
-        //pos = transform.position;
-        pos = new Vector3(0, 4.23f, 0);
+        //playerPosition = transform.position;
+        playerPosition = new Vector3(0, 4.23f, 0);
     }
 
     
@@ -65,39 +65,20 @@ public class PlayerController : MonoBehaviour
         
         if (Input.GetAxis("Vertical") > deadZone && onGround == true)
         {
-            //rigg.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            //pos.y += jumpForce;
-            //onGround = false;
-            //Jump();
-
-            pos.y = jumpForce;
+            playerPosition.y = jumpForce;
         }
 
-        pos.z = runningSpeed;
-        pos.y -= gravity * Time.deltaTime;
-
-        //rigg.velocity = new Vector3(0, 0, runningSpeed);
-        pos.y -= gravity * Time.deltaTime;
-        pos.x = Mathf.Lerp(pos.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
-        //transform.position = pos;
-        characterController.Move(pos * Time.deltaTime);
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            //pos.y = 4.15f;
-            onGround = true;
-            //play running animation
-        }
+        playerPosition.z = runningSpeed;
+        playerPosition.y -= gravity * Time.deltaTime;
+        playerPosition.x = Mathf.Lerp(playerPosition.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
+        characterController.Move(playerPosition * Time.deltaTime);
     }
 
     void Jump()
     {
         //play jump animation
-        //pos.y = 0;
-        pos.y = jumpForce;
+        //playerPosition.y = 0;
+        playerPosition.y = jumpForce;
         //onGround = false;
     }
 
