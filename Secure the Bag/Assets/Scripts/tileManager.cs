@@ -22,7 +22,7 @@ public class TileManager : MonoBehaviour
     {
         //= new GameObject();
         GameObject startingGrid; 
-        startingGrid = Instantiate(prefab[6], new Vector3(0, 0, 10), Quaternion.identity);
+        startingGrid = Instantiate(prefab[6], new Vector3(0, 0, 10), Quaternion.identity);// spawn starting grid
         activeTileSets.Add(startingGrid);
         GenerateTileSet();
     }
@@ -62,10 +62,10 @@ public class TileManager : MonoBehaviour
         gridSet = new GameObject("GridSet") ;
         activeTileSets.Add(gridSet);
 
-        gridSet = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords + 25), Quaternion.identity);
+        gridSet = Instantiate(prefab[0], new Vector3(0, 0, gridSpawnCoords + 25), Quaternion.identity);// Spawn lane border
         gridSet.transform.parent = activeTileSets[1].transform;
 
-        gridSet = Instantiate(prefab[7], new Vector3(0, 5, gridSpawnCoords + 10), Quaternion.identity);
+        gridSet = Instantiate(prefab[7], new Vector3(0, 5, gridSpawnCoords + 10), Quaternion.identity);// spawn the gridSpawner
         gridSet.transform.parent = activeTileSets[1].transform;
 
         for (float z_coords = gridSpawnCoords; z_coords < gridSpawnCoords + 80; z_coords += 20)

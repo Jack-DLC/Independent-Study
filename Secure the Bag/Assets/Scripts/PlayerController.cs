@@ -62,16 +62,21 @@ public class PlayerController : MonoBehaviour
             //The user hasn't pressed a direction this frame, so allow changing directions next frame.
             didChangeLastFrame = false;
         }
-        
+
+        /*
         if (Input.GetAxis("Vertical") > deadZone && onGround == true)
         {
             playerPosition.y = jumpForce;
-        }
+            //playerPosition.y -= gravity * Time.deltaTime;
 
-        playerPosition.z = runningSpeed;
-        playerPosition.y -= gravity * Time.deltaTime;
-        playerPosition.x = Mathf.Lerp(playerPosition.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
-        characterController.Move(playerPosition * Time.deltaTime);
+        }
+        */
+
+        rigg.velocity = new Vector3(0, 0, runningSpeed);
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Lerp(pos.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
+        transform.position = pos;
+        // characterController.Move(playerPosition * Time.deltaTime);
     }
 
     void Jump()
