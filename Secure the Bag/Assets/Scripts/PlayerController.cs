@@ -31,8 +31,9 @@ public class PlayerController : MonoBehaviour
 
         // This controls the character animations
         characterController = GetComponent<CharacterController>(); // used for animations
+
         //animator = GetComponent<Animator>(); // used for setting the animations
-        
+
         onGround = true;
         rigg = GetComponent<Rigidbody>(); // Not sure if i need this anymore
         rigg.constraints = RigidbodyConstraints.FreezeRotation;
@@ -40,9 +41,10 @@ public class PlayerController : MonoBehaviour
         playerPosition = new Vector3(0, 4.23f, 0);
     }
 
-    
+
     void Update()
     {
+        playerPosition = transform.position;
         //"Horizontal" is a default input axis set to arrow keys and A/D
         //We want to check whether it is less than the deadZone instead of whether it's equal to zero 
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -56,40 +58,42 @@ public class PlayerController : MonoBehaviour
                 if (laneNumber < -1) laneNumber = -1;
                 else if (laneNumber >= lanesCount) laneNumber = lanesCount - 1;
             }
-        }      
+        }
         else
         {
             //The user hasn't pressed a direction this frame, so allow changing directions next frame.
             didChangeLastFrame = false;
         }
-        
-        if (Input.GetAxis("Vertical") > deadZone && onGround == true)
+
+        //jump
+        if ((Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) && onGround)
         {
-            playerPosition.y = jumpForce;
+            //Vector3 upForce = Vector3.up * jumpForce;
+            //Vector3 horizontalForce = rigg.GetPointVelocity(transform.position);
+            //rigg.AddForce(upForce + horizontalForce, ForceMode.Impulse);
+           rigg.AddForce( Vector3.up * jumpForce, ForceMode.Impulse);
+           onGround = false;
         }
 
-        playerPosition.z = runningSpeed;
-        playerPosition.y -= gravity * Time.deltaTime;
+        if (!onGround)
+        {
+            //playerPosition.y -= gravity * Time.deltaTime;
+        }
+
+        rigg.velocity = new Vector3(0,0,runningSpeed);
         playerPosition.x = Mathf.Lerp(playerPosition.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
-        characterController.Move(playerPosition * Time.deltaTime);
+        transform.position = playerPosition;
     }
 
-    void Jump()
-    {
-        //play jump animation
-        //playerPosition.y = 0;
-        playerPosition.y = jumpForce;
-        //onGround = false;
-    }
 
-    void MoveLeft()
+    void OnCollisionEnter(Collision collision)
     {
-        //play leftmovement animation
+        Debug.Log("true");
 
-    }
-
-    void MoveRight()
-    {
-        //play right movement animation
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            
+            onGround = true;
+        }
     }
 }
