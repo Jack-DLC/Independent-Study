@@ -9,35 +9,34 @@ public class PlayerController : MonoBehaviour
     private Animator animator; // used to handle animations
     private Rigidbody rigg; // A reference to the rigidbody of the player
 
-    bool didChangeLastFrame = false;
-    Vector3 playerPosition;
+    bool didChangeLastFrame;
 
-
-    public float gravity = -9.8f;
-    public float jumpForce; // how quickly they jump
-    private bool onGround;
+    //public float gravity;
+    public float jumpForce; // the vertical force added to the player
+    private bool onGround; // check if the player is on the ground or not
 
     // These variables deal with lane position and change
     public int laneNumber = 0; // the lane the player is currently
-    public int lanesCount = 2; // there are actually 
-    public float laneDistance = 10; // dist. between lanes
+    
+    // determines how many lanes the player can move between, there are actualy three but this works 
+    // around a bug
+    public int lanesCount = 2; 
+    public float laneDistance = 10; // distance between lanes
     public float firstLaneXPos = 0; // the x coordinate of the starting lane
-    public float deadZone = 0.1f; // if a value is greater than this the player can perform an action
-    public float sideSpeed = 5; // how quickly a player changes lanes
-    public float runningSpeed; // how quickly a player changes lanes     
+    public float deadZone = 0.1f; // if an input value is greater than this, the player can perform an action
+    public float sideSpeed = 5f; // how quickly a player changes lanes
+    public float runningSpeed; // the running speed of the player    
 
     void Start() // Start is called before the first frame update
     {
-
-        // This controls the character animations
-        characterController = GetComponent<CharacterController>(); // used for animations
         //animator = GetComponent<Animator>(); // used for setting the animations
-        
-        onGround = true;
         rigg = GetComponent<Rigidbody>(); // Not sure if i need this anymore
         rigg.constraints = RigidbodyConstraints.FreezeRotation;
-        //playerPosition = transform.position;
-        playerPosition = new Vector3(0, 4.23f, 0);
+
+        //  these variables reset when the game begins
+        onGround = true;
+        runningSpeed = 11f;
+        didChangeLastFrame = false;
     }
 
     
@@ -46,6 +45,7 @@ public class PlayerController : MonoBehaviour
         //"Horizontal" is a default input axis set to arrow keys and A/D
         //We want to check whether it is less than the deadZone instead of whether it's equal to zero 
         float horizontalInput = Input.GetAxis("Horizontal");
+
         // if the player hits "a", "d", left arrow, or right arrow the character will change lanes
         if (Mathf.Abs(horizontalInput) > deadZone)
         {
@@ -63,33 +63,36 @@ public class PlayerController : MonoBehaviour
             didChangeLastFrame = false;
         }
         
+        // if the player hits "w" or up arrow, a vertical force is added to the rigidbody to make the player jump
         if (Input.GetAxis("Vertical") > deadZone && onGround == true)
         {
-            playerPosition.y = jumpForce;
+            rigg.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            onGround = false; // prevent double jumping
         }
-
-        playerPosition.z = runningSpeed;
-        playerPosition.y -= gravity * Time.deltaTime;
+        
+        Vector3 playerPosition = transform.position; //get the current position of the player 
+        
+        // ensures player can jump without losing their vertical and horizontal velocity
+        rigg.velocity = new Vector3(0, rigg.velocity.y, runningSpeed); 
         playerPosition.x = Mathf.Lerp(playerPosition.x, firstLaneXPos + laneDistance * laneNumber, Time.deltaTime * sideSpeed);
-        characterController.Move(playerPosition * Time.deltaTime);
+        transform.position = playerPosition;
     }
 
-    void Jump()
+    private void OnCollisionEnter(Collision collision)
     {
-        //play jump animation
-        //playerPosition.y = 0;
-        playerPosition.y = jumpForce;
-        //onGround = false;
+        // when player collides with the ground, set onGround to true
+        if (collision.collider.CompareTag("Ground"))
+        {
+            onGround = true;
+        }
     }
 
-    void MoveLeft()
+    // used to increase player speed
+    public void SpeedMultiplier ()
     {
-        //play leftmovement animation
-
-    }
-
-    void MoveRight()
-    {
-        //play right movement animation
+        if (transform.position.z % 50 == 0)
+        {
+            runningSpeed += runningSpeed * .1f;
+        }
     }
 }
